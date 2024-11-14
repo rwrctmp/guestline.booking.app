@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guestline.Booking.App.Models
+﻿namespace Guestline.Booking.App.Models
 {
     public class Booking
     {
@@ -12,6 +6,5 @@ namespace Guestline.Booking.App.Models
         public uint Arrival { get; set; } 
         public uint Departure { get; set; }
         public string RoomType { get; set; }
-        public string RoomRate { get; set; }
     }
 }

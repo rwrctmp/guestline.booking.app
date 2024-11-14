@@ -1,14 +1,17 @@
 ﻿using Guestline.Booking.App.Exceptions;
 using Guestline.Booking.App.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Guestline.Booking.App
 {
     public class ConsoleApplication
     {
         private readonly Dictionary<string, ICommand> _commands;
+        private readonly ILogger _logger;
 
-        public ConsoleApplication(IEnumerable<ICommand> commands)
+        public ConsoleApplication(IEnumerable<ICommand> commands, ILogger<ConsoleApplication> logger)
         {
+            _logger = logger;
             _commands = commands.ToDictionary(x => x.Name, x => x, StringComparer.OrdinalIgnoreCase);
         }
 
@@ -52,7 +55,14 @@ namespace Guestline.Booking.App
                 return;
             }
 
-            command.Execute(commandParameters);
+            try
+            {
+                Console.WriteLine(command.Execute(commandParameters));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
         }
 
         private string[] ParseParameters(ReadOnlySpan<char> paramText)
