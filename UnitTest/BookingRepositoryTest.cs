@@ -2,6 +2,7 @@ using Guestline.Booking.App.Interfaces;
 using Guestline.Booking.App.Services;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using System.Globalization;
 
 namespace Guestline.Booking.UnitTest
 {
@@ -16,7 +17,8 @@ namespace Guestline.Booking.UnitTest
             var mockConfig = new Mock<IConfiguration>();
             mockConfig.Setup(c => c["hotels"]).Returns("hotels.json");
             mockConfig.Setup(c => c["bookings"]).Returns("bookings.json");
-            _repository = new JsonRepository(mockConfig.Object);
+            var mockDateService = new Mock<IDateService>();
+            _repository = new JsonRepository(mockConfig.Object, mockDateService.Object);
         }
 
         [Test]
@@ -31,6 +33,22 @@ namespace Guestline.Booking.UnitTest
             Assert.That(firstRecord.RoomType, Is.EqualTo("DBL"));
             Assert.That(firstRecord.Arrival, Is.EqualTo(20240901));
             Assert.That(firstRecord.Departure, Is.EqualTo(20240903));
+        }
+
+        [Test]
+        public void GetBookingsFiltered()
+        {
+            var mockConfig = new Mock<IConfiguration>();
+            mockConfig.Setup(c => c["hotels"]).Returns("hotels.json");
+            mockConfig.Setup(c => c["bookings"]).Returns("bookings.json");
+            mockConfig.Setup(c => c["ignoreObsoleteData"]).Returns("true");
+            var mockDateService = new Mock<IDateService>();
+            mockDateService.Setup(x => x.GetCurrentDate())
+                .Returns(DateTime.ParseExact("09/05/2024", "d", CultureInfo.InvariantCulture));
+            var repository = new JsonRepository(mockConfig.Object, mockDateService.Object);
+
+            Assert.That(repository.Bookings.Count, Is.EqualTo(4));
+
         }
 
         [Test]

@@ -35,8 +35,6 @@ namespace Guestline.Booking.App.Services
                 }
             }
 
-            var currentDate = _dateService.GetCurrentDate().ToUIntDate();    
-
             foreach (var booking in repository.Bookings.GroupBy(x => new CacheKey(x.HotelId, x.RoomType)))
             {
                 if (!_cache.TryGetValue(booking.Key, out var data))
@@ -45,7 +43,7 @@ namespace Guestline.Booking.App.Services
                     continue;
                 }
 
-                data.Bookings = booking.Where(x => x.Departure >= currentDate).ToArray();
+                data.Bookings = booking.ToArray();
             }
         }
 

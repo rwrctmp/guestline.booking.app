@@ -6,11 +6,6 @@ namespace Guestline.Booking.App.Helpers
 {
     internal static class JsonHelper
     {
-        internal static List<T> LoadCollectionFromFile<T>(string path)
-        {
-            return LoadCollectionFromString<T>(File.ReadAllText(path));
-        }
-
         internal static List<T> LoadCollectionFromString<T>(string jsonContent)
         {
             var options = new JsonSerializerOptions

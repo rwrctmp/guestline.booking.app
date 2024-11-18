@@ -18,12 +18,11 @@ namespace Guestline.Booking.UnitTest
             var mockConfig = new Mock<IConfiguration>();
             mockConfig.Setup(c => c["hotels"]).Returns("hotels.json");
             mockConfig.Setup(c => c["bookings"]).Returns("bookings.json");
-            
-            var repository = new JsonRepository(mockConfig.Object);
-            
             var mockDateService = new Mock<IDateService>();
             mockDateService.Setup(x => x.GetCurrentDate())
                 .Returns(DateTime.ParseExact("09/01/2024", "d", CultureInfo.InvariantCulture));
+
+            var repository = new JsonRepository(mockConfig.Object, mockDateService.Object);
             
             var mockLogger = new Mock<ILogger<BookingService>>();
             _service = new BookingService(repository, mockDateService.Object, mockLogger.Object);
